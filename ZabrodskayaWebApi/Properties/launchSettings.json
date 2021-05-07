@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/weatherforecast",
+      "launchUrl": "api/standart/getstandartsbytype/0",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -23,7 +23,7 @@
     "ZabrodskayaWebApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/weatherforecast",
+      "launchUrl": "api/standart/getstandartsbytype/0",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
