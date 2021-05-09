@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZabrodskayaWebApi.Models;
 
 namespace ZabrodskayaWebApi.Controllers
 {
@@ -26,61 +27,81 @@ namespace ZabrodskayaWebApi.Controllers
 
         [HttpGet]
         [Route("LogIn/{login}/{password}")]
-        public JsonResult LogIn(string login, string password)
+        public ApiResponse LogIn(string login, string password)
         {
             try
             {
                 var user = context.Users.FirstOrDefault(u => string.Equals(u.Login, login) && string.Equals(u.Password, password));
-                if(user == null)
+                if (user == null)
                 {
-                    return new JsonResult(new { IsSuccess = false, Message = "Пользователь с такими данными не существует!" });
+                    return new ApiResponse(false, "Пользователь с такими данными не существует!");
                 }
                 else
                 {
-                    return new JsonResult(new { IsSuccess = true, Message = "Success", Data = user });
+                    return new ApiResponse(true, "Success", user);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new JsonResult(new { IsSuccess = false, Message = ex.Message });
+                return new ApiResponse(false, ex.Message);
             }
         }
 
         [HttpPut]
         [Route("SignUp")]
-        public JsonResult SignUp([FromBody]User user)
+        public ApiResponse SignUp([FromBody] User user)
         {
             try
             {
-                if(user == null)
+                if (user == null)
                 {
-                    return new JsonResult(new { IsSuccess = false, Message = "Невозможно зарегистрироваться!\nПожалуйста, повторите ещё раз!" });
+                    return new ApiResponse(false, "Невозможно зарегистрироваться!\nПожалуйста, повторите ещё раз!");
                 }
                 context.Users.Add(user);
                 context.SaveChanges();
-                return new JsonResult(new { IsSuccess = true, Message = "Success", Data = user });
+                return new ApiResponse(true, "Success", user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new JsonResult(new { IsSuccess = false, Message = ex.Message });
+                return new ApiResponse(false, ex.Message);
             }
         }
 
         [HttpPut]
         [Route("AddStandartToFavorites")]
-        public JsonResult AddStandartToFavorites([FromBody]XrefUserStandart xrefUserStandart)
+        public ApiResponse AddStandartToFavorites([FromBody] XrefUserStandart xrefUserStandart)
         {
             try
             {
                 context.XrefUserStandarts.Add(xrefUserStandart);
                 context.SaveChanges();
-                return new JsonResult(new { IsSuccess = true, Message = "Success" });
+                return new ApiResponse(true, "Success");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return new JsonResult(new { IsSuccess = false, Message = ex.Message });
+                return new ApiResponse(false, ex.Message);
             }
         }
 
+        [HttpDelete]
+        [Route("deletestandartfromfavorite/{standartId}/{userId}")]
+        public void DeleteStandartFromFavorite(int userId, int standartId)
+        {
+            try
+            {
+                var standart = context.XrefUserStandarts.FirstOrDefault(x => x.StandartId == standartId && x.UserId == userId);
+                if(standart == null)
+                {
+                    return;
+                }
+
+                context.XrefUserStandarts.Remove(standart);
+                context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

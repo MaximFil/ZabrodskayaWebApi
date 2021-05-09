@@ -27,35 +27,48 @@ namespace ZabrodskayaWebApi.Controllers
         }
 
         [HttpGet]
+        [Route("getstandarttypes")]
+        public List<StandartType> GetStandartTypes()
+        {
+            try
+            {
+                return context.StandartTypes.ToList();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpGet]
         [Route("getstandartsbytype/{typeId}")]
-        public JsonResult GetStandartsByType(int typeId)
+        public List<Standart> GetStandartsByType(int typeId)
         {
             try
             {
                 if(typeId < 1)
                 {
-                    return Json(new { IsSuccess = false, Message = "Такого типа не существует!" });
+                    throw new Exception("Такого типа не существует!");
                 }
-                var standarts = context.Standarts.Include(s => s.StandartType)
+                
+                return context.Standarts.Include(s => s.StandartType)
                         .Where(s => s.StandartType.Id == typeId).ToList();
-
-                return new JsonResult(new { IsSuccess = true, Message = "Success", Data = standarts });
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { IsSuccess = false, Message = ex.Message });
+                throw;
             }
         }
 
         [HttpGet]
         [Route("GetFavoriteStandarts/{userId}")]
-        public JsonResult GetFavoriteStandarts(int userId)
+        public ApiResponse GetFavoriteStandarts(int userId)
         {
             try
             {
                 if(userId < 1)
                 {
-                    return new JsonResult(new { IsSuccess = false, Message = "Такого пользователя не существует!" });
+                    return new ApiResponse(false, "Такого пользователя не существует!");
                 }
 
                 var standarts = context.XrefUserStandarts.Include(x => x.Standart)
@@ -63,16 +76,31 @@ namespace ZabrodskayaWebApi.Controllers
                     .Where(x => x.UserId == userId)
                     .Select(x => new FavoriteStandart
                     {
+                        StandartId = x.StandartId,
                         StandartTypeName = x.Standart.StandartType.StandartTypeName,
                         StandartHeader = x.Standart.Header,
                         StandartDetails = x.Standart.Details
                     }).ToList();
 
-                return new JsonResult(new { IsSuccess = true, Message = "Success", Data = standarts });
+                return new ApiResponse(true, "Success", standarts);
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { IsSuccess = false, Message = ex.Message });
+                return new ApiResponse(false, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllStandarts")]
+        public List<Standart> GetStandarts()
+        {
+            try
+            {
+                return context.Standarts.ToList();
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         }
     }
