@@ -13,6 +13,8 @@ namespace ZabrodskayaWebApi.DAL
 
         public string Discription { get; set; }
 
+        public string Abbr { get; set; }
+
         public List<Standart> Standarts { get; set; }
 
         public StandartType()

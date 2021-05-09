@@ -62,13 +62,13 @@ namespace ZabrodskayaWebApi.Controllers
 
         [HttpGet]
         [Route("GetFavoriteStandarts/{userId}")]
-        public ApiResponse GetFavoriteStandarts(int userId)
+        public List<FavoriteStandart> GetFavoriteStandarts(int userId)
         {
             try
             {
                 if(userId < 1)
                 {
-                    return new ApiResponse(false, "Такого пользователя не существует!");
+                    throw new Exception("Такого пользователя не существует!");
                 }
 
                 var standarts = context.XrefUserStandarts.Include(x => x.Standart)
@@ -82,11 +82,11 @@ namespace ZabrodskayaWebApi.Controllers
                         StandartDetails = x.Standart.Details
                     }).ToList();
 
-                return new ApiResponse(true, "Success", standarts);
+                return standarts;
             }
             catch (Exception ex)
             {
-                return new ApiResponse(false, ex.Message);
+                throw;
             }
         }
 

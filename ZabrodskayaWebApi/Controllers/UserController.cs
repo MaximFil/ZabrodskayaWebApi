@@ -47,7 +47,7 @@ namespace ZabrodskayaWebApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("SignUp")]
         public ApiResponse SignUp([FromBody] User user)
         {
@@ -67,19 +67,32 @@ namespace ZabrodskayaWebApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpGet]
+        [Route("GetUsedUserNames")]
+        public List<string> GetUsedUserNames()
+        {
+            try
+            {
+                return context.Users.Select(u => u.Login).ToList();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
         [Route("AddStandartToFavorites")]
-        public ApiResponse AddStandartToFavorites([FromBody] XrefUserStandart xrefUserStandart)
+        public void AddStandartToFavorites([FromBody] XrefUserStandart xrefUserStandart)
         {
             try
             {
                 context.XrefUserStandarts.Add(xrefUserStandart);
                 context.SaveChanges();
-                return new ApiResponse(true, "Success");
             }
             catch (Exception ex)
             {
-                return new ApiResponse(false, ex.Message);
+                throw;
             }
         }
 
