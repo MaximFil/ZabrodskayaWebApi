@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
@@ -34,7 +35,7 @@ namespace ZabrodskayaWebApi
                 );
 
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("TestDB")));
+                options.UseMySql(Configuration.GetConnectionString("TestDB"), new MySqlServerVersion(new Version(8, 0, 0))));
 
             //services.AddSwaggerGen(c =>
             //{
